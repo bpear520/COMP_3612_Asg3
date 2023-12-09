@@ -1,2 +1,23 @@
 # COMP_3612_Asg3
  
+## TESTING
+- [/api/paintings](http://localhost:8080/api/paintings)
+- [/api/painting/433](http://localhost:8080/api/painting/433)
+- [/api/painting/43374534856](http://localhost:8080/api/painting/43374534856)
+- [/api/painting/gallery/7](http://localhost:8080/api/painting/gallery/7)
+- [/api/painting/gallery/43374534856](http://localhost:8080/api/painting/gallery/43374534856)
+- [/api/painting/artist/106](http://localhost:8080/api/painting/artist/106)
+- [/api/painting/artist/43374534856](http://localhost:8080/api/painting/artist/43374534856)
+- [/api/painting/year/1850/1900](http://localhost:8080/api/painting/year/1850/1900)
+- [/api/painting/year/2200/2400](http://localhost:8080/api/painting/year/2200/2400)
+- [/api/painting/title/self](http://localhost:8080/api/painting/title/self)
+- [/api/painting/title/dfjkghdfkgh](http://localhost:8080/api/painting/title/dfjkghdfkgh)
+- [/api/painting/color/NAPA](http://localhost:8080/api/painting/color/NAPA)
+- [/api/painting/color/coffee%20bean](http://localhost:8080/api/painting/color/coffee%20bean)
+- [/api/painting/color/kcvhvxchbkcj](http://localhost:8080/api/painting/color/kcvhvxchbkcj)
+- [/api/artists](http://localhost:8080/api/artists)
+- [/api/artists/Netherlands](http://localhost:8080/api/artists/Netherlands)
+- [/api/artists/sdfjjsdf](http://localhost:8080/api/artists/sdfjjsdf)
+- [/api/galleries](http://localhost:8080/api/galleries)
+- [/api/galleries/france](http://localhost:8080/api/galleries/france)
+- [/api/galleries/kcvhvxchbkcj](http://localhost:8080/api/galleries/kcvhvxchbkcj)
