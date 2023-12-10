@@ -1,70 +1,78 @@
 const data = require("./dataProvider.js");
 
-//TODO: 404 response for these endpoints
+// Generic helper function to filter data, if no matches, return 404
+const filterData = (dataset, filterFunc, notFoundMessage, req, res) => {
+    const matches = dataset.filter(filterFunc);
+    if (matches.length > 0) {
+        res.json(matches.length === 1 ? matches[0] : matches);
+    } else {
+        res.status(404).send(notFoundMessage);
+    }
+};
+
+// Generic helper function to handle all methods, if the dataset is empty, return 404
+const handleAllData = (dataset, notFoundMessage, res) => {
+  if (dataset && dataset.length > 0) {
+      res.json(dataset);
+  } else {
+      res.status(404).send(notFoundMessage);
+  }
+};
+
 const handleAllPaintings = (app) => {
   app.get("/api/paintings", (req, res) => {
-    res.json(data.dataPaintings);
+    handleAllData(data.dataPaintings, "No paintings found", res);
   });
 };
 
 const handleAllGalleries = (app) => {
   app.get("/api/galleries", (req, res) => {
-    res.json(data.dataGalleries);
+    handleAllData(data.dataGalleries, "No galleries found", res);
   });
 };
 
 const handleAllArtists = (app) => {
   app.get("/api/artists", (req, res) => {
-    res.json(data.dataArtists);
+    handleAllData(data.dataArtists, "No artists found", res);
   });
 };
 
 const handlePaintingById = (app) => {
   app.get("/api/painting/:id", (req, res) => {
     const paintingID = parseInt(req.params.id, 10);
-    const matches = data.dataPaintings.filter(
-      (p) => p.paintingID == paintingID
+    filterData(
+      data.dataPaintings,
+      (painting) => painting.paintingID === paintingID,
+      `No painting with id: ${req.params.id} found`,
+      req,
+      res
     );
-
-    if (matches.length > 0) {
-      res.json(matches[0]);
-    } else {
-      res.status(404).send(`No painting with id: ${req.params.id} found`);
-    }
   });
 };
 
 const handlePaintingByGalleryId = (app) => {
   app.get("/api/painting/gallery/:id", (req, res) => {
     const galleryID = parseInt(req.params.id, 10);
-    const matches = data.dataPaintings.filter(
-      (p) => p.gallery.galleryID === galleryID
-    );
-
-    if (matches.length > 0) {
-      res.json(matches);
-    } else {
+    filterData(
+      data.dataPaintings,
+      (painting) => painting.gallery.galleryID === galleryID,
+      `No paintings with galleryId: ${req.params.id} found`,
+      req,
       res
-        .status(404)
-        .send(`No paintings with galleryId: ${req.params.id} found`);
-    }
+    );
   });
 };
 
 const handlePaintingByArtistId = (app) => {
   app.get("/api/painting/artist/:id", (req, res) => {
     const artistID = parseInt(req.params.id, 10);
-    const matches = data.dataPaintings.filter(
-      (p) => p.artist.artistID === artistID
-    );
-
-    if (matches.length > 0) {
-      res.json(matches);
-    } else {
+    filterData(
+      data.dataPaintings,
+      (painting) => painting.artist.artistID === artistID,
+      `No paintings with artistId: ${req.params.id} found`,
+      req,
       res
-        .status(404)
-        .send(`No paintings with artistId: ${req.params.id} found`);
-    }
+    );
   });
 };
 
@@ -72,84 +80,69 @@ const handlePaintingByYearMinMax = (app) => {
   app.get("/api/painting/year/:min/:max", (req, res) => {
     const yearOfWorkMin = parseInt(req.params.min, 10);
     const yearOfWorkMax = parseInt(req.params.max, 10);
-    const matches = data.dataPaintings.filter(
-      (p) => p.yearOfWork >= yearOfWorkMin && p.yearOfWork <= yearOfWorkMax
-    );
-    if (matches.length > 0) {
-      res.json(matches);
-    } else {
+    filterData(
+      data.dataPaintings,
+      (painting) => painting.yearOfWork >= yearOfWorkMin && painting.yearOfWork <= yearOfWorkMax,
+      `No paintings with year between ${req.params.min} and ${req.params.max} found`,
+      req,
       res
-        .status(404)
-        .send(
-          `No paintings with year between ${req.params.min} and ${req.params.max} found`
-        );
-    }
+    );
   });
 };
 
 const handlePaintingByTitle = (app) => {
   app.get("/api/painting/title/:title", (req, res) => {
     const title = req.params.title;
-    const matches = data.dataPaintings.filter((p) =>
-      p.title.toLowerCase().includes(title.toLowerCase())
-    );
-    if (matches.length > 0) {
-      res.json(matches);
-    } else {
+    filterData(
+      data.dataPaintings,
+      (painting) => painting.title.toLowerCase().includes(title.toLowerCase()),
+      `No paintings with title: ${req.params.title} found`,
+      req,
       res
-        .status(404)
-        .send(`No paintings with title: ${req.params.title} found`);
-    }
+    );
   });
 };
 
 const handlePaintingsByColorName = (app) => {
   app.get("/api/painting/color/:color", (req, res) => {
     const colorName = req.params.color.toLowerCase();
-
-    const matches = data.dataPaintings.filter((painting) =>
-      painting.details.annotation.dominantColors.some((colorObject) =>
+    filterData(
+      data.dataPaintings,
+      (painting) => painting.details.annotation.dominantColors.some((colorObject) =>
         colorObject.name.toLowerCase().includes(colorName)
-      )
-    );
-
-    if (matches.length > 0) {
-      res.json(matches);
-    } else {
+      ),
+      `No paintings with color name: ${req.params.color} found`,
+      req,
       res
-        .status(404)
-        .send(`No paintings with color name: ${req.params.color} found`);
-    }
+    );
   });
 };
 
 const handleArtistsByCountry = (app) => {
   app.get("/api/artists/:country", (req, res) => {
     const country = req.params.country;
-    const matches = data.dataArtists.filter((p) =>
-      p.Nationality.toLowerCase().includes(country.toLowerCase())
+    filterData(
+      data.dataArtists,
+      (artist) => artist.Nationality.toLowerCase().includes(country.toLowerCase()),
+      `No artists from the country: ${country} found`,
+      req,
+      res
     );
-    if (matches.length > 0) {
-      res.json(matches);
-    } else {
-      res.status(404).send(`No artists from the country: ${country} found`);
-    }
   });
 };
 
 const handleGalleriesByCountry = (app) => {
-    app.get("/api/galleries/:country", (req, res) => {
-        const country = req.params.country;
-        const matches = data.dataGalleries.filter((p) =>
-        p.GalleryCountry.toLowerCase().includes(country.toLowerCase())
-        );
-        if (matches.length > 0) {
-        res.json(matches);
-        } else {
-        res.status(404).send(`No galleries from the country: ${country} found`);
-        }
-    });
-    };
+  app.get("/api/galleries/:country", (req, res) => {
+    const country = req.params.country;
+    filterData(
+      data.dataGalleries,
+      (gallery) => gallery.GalleryCountry.toLowerCase().includes(country.toLowerCase()),
+      `No galleries from the country: ${country} found`,
+      req,
+      res
+    );
+  });
+};
 
 module.exports = {
   handleAllPaintings,
@@ -162,5 +155,5 @@ module.exports = {
   handlePaintingByTitle,
   handlePaintingsByColorName,
   handleArtistsByCountry,
-    handleGalleriesByCountry
+  handleGalleriesByCountry
 };
